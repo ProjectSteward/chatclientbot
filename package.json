@@ -1,0 +1,25 @@
+{
+  "name": "chatclientbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "chatclient.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProjectSteward/chatclientbot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ProjectSteward/chatclientbot/issues"
+  },
+  "homepage": "https://github.com/ProjectSteward/chatclientbot#readme",
+  "dependencies": {
+    "node-strophe": "^2.0.0",
+    "node-xmpp-client": "^3.2.0",
+    "strophe": "^1.2.4"
+  },
+  "devDependencies": {}
+}

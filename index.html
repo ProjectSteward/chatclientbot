@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Steward Eikon messenger client</title>
+    <script type='text/javascript' src='libs/jquery/dist/jquery.min.js'></script>
+    <script type='text/javascript' src='libs/strophe.js/strophe.min.js'></script>
+    <script type='text/javascript' src='chatclient.js'></script>
+</head>
+<body>
+<div id='login' style='text-align: center'>
+    <form name='cred'>
+        <label for='jid'>JID:</label>
+        <input type='text' id='jid' value="eikon.steward.thomsonreuters.com@reuters.net">
+        <label for='pass'>Password:</label>
+        <input type='password' id='pass' value="Thomson67" />
+        <input type='button' id='connect' value='connect' />
+    </form>
+</div>
+<hr />
+<div id='log'></div>
+</body>
+</html>
