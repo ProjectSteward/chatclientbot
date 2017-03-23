@@ -1,6 +1,5 @@
 # chatclientbot
-1. Install Bower (npm install -g bower)
+1. Install webpack (npm install -g webpack)
 2. Install http-server (npm install -g http-server)
-3. Run bower install
-4. start web server via http-server -c-1
-5. Launch Web Browser - http://localhost:8080
+2. Install opn-cli (npm install -g opn-cli)
+3. npm run build
