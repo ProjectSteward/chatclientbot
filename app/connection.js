@@ -12,6 +12,7 @@ function EikonMessengerConnection() {
     var onBeforeDisconnectCb = null;
     var onDisconnectedCb = null;
     var onReceivedMessageCb = null;
+    var onSentCb = null;
     var onTypingCb = null;
     var onErrorCb = null;
     var keepOnline = false;
@@ -96,6 +97,8 @@ function EikonMessengerConnection() {
             }).cnode(Strophe.xmlElement('body', null, message));
 
             connection.send(msg.tree());
+
+            notifyCb(onSentCb, { to: to, message: message});
         }
         catch (err) {
             notifyCb(onErrorCb, err);
@@ -123,6 +126,7 @@ function EikonMessengerConnection() {
             onBeforeDisconnectCb = typeof attr.onBeforeDisconnect === 'function' ? attr.onBeforeDisconnect : null;
             onDisconnectedCb = typeof attr.onDisconnected === 'function' ? attr.onDisconnected : null;
             onReceivedMessageCb = typeof attr.onReceivedMessage === 'function' ? attr.onReceivedMessage : null;
+            onSentCb = typeof attr.onSent === 'function' ? attr.onSent : null;
             onTypingCb = typeof attr.onTyping === 'function' ? attr.onTyping : null;
             onErrorCb = typeof attr.onError === 'function' ? attr.onError : null;
             onRawLogCb = typeof attr.onRawLog === 'function' ? attr.onRawLog : null;
@@ -147,6 +151,7 @@ function EikonMessengerConnection() {
         isConnected = false;
         onConnectCb = null;
         onReceivedMessageCb = null;
+        onSentCb = null;
         onTypingCb = null;
         onErrorCb = null;
         username = null;

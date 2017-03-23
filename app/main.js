@@ -1,4 +1,4 @@
-var connection = EikonMessengerConnection();
+var connection = new EikonMessengerConnection();
 
 function log(msg)
 {
@@ -21,11 +21,14 @@ $(document).ready(function(){
                 },
                 onReceivedMessage: function(msg) {
                     log('Steward: I got a message from ' + msg.from + ': ' + msg.message);
-                    connection.Send(msg.from, "OK, I got your message");
+                    connection.Send(msg.from, 'OK, I got your message - "' + msg.message + '"');
                     connection.Send(msg.from, '"' + msg.message + '"');
                 },
                 onError: function(err) {
                     log(err);
+                },
+                onSent: function(msg) {
+                    log('Steward: I\'ve sendt message to ' + msg.to + ': ' + msg.message);
                 },
                 keepOnline: true
             });
