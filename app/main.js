@@ -1,12 +1,17 @@
 var connection = new EikonMessengerConnection();
 var steward = new Steward();
 
-function log(msg)
-{
+function log(msg) {
     $('#log').append('<div></div>').append(document.createTextNode(msg));
 }
 
 $(document).ready(function(){
+    function onReplyCallback(replyTo, message) {
+        connection.Send(replyTo, message);
+    }
+
+    steward.onReply(onReplyCallback);
+
     $('#connect').bind('click', function () {
         var button = $('#connect').get(0);
         if (button.value === 'connect') {
@@ -22,8 +27,8 @@ $(document).ready(function(){
                 },
                 onReceivedMessage: function(msg) {
                     log('Steward: I got a message from ' + msg.from + ': ' + msg.message);
-                    connection.Send(msg.from, 'OK, I got your message - "' + msg.message + '"');
-                    connection.Send(msg.from, '"' + msg.message + '"');
+                    // connection.Send(msg.from, 'OK, I got your message - "' + msg.message + '"');
+                    // connection.Send(msg.from, '"' + msg.message + '"');
 
                     steward.Ask(msg.from, msg.message);
                 },

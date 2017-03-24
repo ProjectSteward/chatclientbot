@@ -4,10 +4,35 @@
 function Steward() {
 
     var websocket = null;
+    var onReplyCb = null;
     var conversations = []; // [{name: "adipat.larprattanakul.thomsonreuters.com@reuters.net", cid: 3}]
+
+    function onReply(f) {
+        onReplyCb = f;
+    }
 
     function onMsg(event) {
         console.log(event.data);
+        var eventObj = JSON.parse(event.data);
+        if (eventObj && eventObj.activities && eventObj.activities.length > 0) {
+            var response = eventObj.activities[0];
+            if (response.from.id === 'StewardTRBot') {
+                var replyTo = getUserNameFromConversationId(response.conversation.id);
+                if (replyTo && onReplyCb) {
+                    onReplyCb(replyTo, response.text);
+                }
+            }
+        }
+    }
+
+    function getUserNameFromConversationId(cid) {
+        var result = $.grep(conversations, function(e) {
+            return e.cid === cid;
+        });
+
+        if (result.length > 0)
+            return result[0].name;
+        return null;
     }
 
     function getConversationFromName(name) {
@@ -76,6 +101,7 @@ function Steward() {
     }
 
     return {
-        Ask: Ask
+        Ask: Ask,
+        onReply: onReply
     }
 }
