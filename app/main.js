@@ -25,9 +25,7 @@ $(document).ready(function(){
                     connection.Send(msg.from, 'OK, I got your message - "' + msg.message + '"');
                     connection.Send(msg.from, '"' + msg.message + '"');
 
-                    steward.ask(msg.message).then(function(answer){
-                        connection.Send(msg.from, answer);
-                    });
+                    steward.Ask(msg.from, msg.message);
                 },
                 onError: function(err) {
                     log(err);

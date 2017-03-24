@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ProjectSteward/chatclientbot#readme",
   "dependencies": {
+    "botframework-directlinejs": "^0.9.4",
     "jquery": "^3.2.1",
     "strophe": "^1.2.4"
   }
