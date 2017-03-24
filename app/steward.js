@@ -3,31 +3,76 @@
  */
 function Steward() {
 
-    var conversations = []; // [{from: "adipat.larprattanakul.thomsonreuters.com@reuters.net", cid: 3}]
+    var websocket = null;
+    var conversations = []; // [{name: "adipat.larprattanakul.thomsonreuters.com@reuters.net", cid: 3}]
 
-    function getConversation(from) {
+    function onMsg(event) {
+        console.log(event.data);
+    }
+
+    function getConversationFromName(name) {
+        var defer = $.Deferred();
         var result = $.grep(conversations, function(e) {
-            return e.from === from;
+            return e.name === name;
         });
 
         if (result.length > 0)
-            return result[0].cid;
+            defer.resolve(result[0]);
+        else if (result.length === 0)
+        {
+            $.ajax({
+                type: 'POST',
+                url: 'https://directline.botframework.com/v3/directline/conversations',
+                headers: { 'Authorization': 'Bearer 8LcS8tQ0UGU.cwA.iUk._NqOkDxxx37e4d13RzIkxiEci-7WBFqk9c_rZSgzxZM' }
+            }).done(function (result) {
+                websocket = new WebSocket(result.streamUrl);
+                websocket.onmessage = onMsg;
+                var conv = {
+                    name: name,
+                    cid: result.conversationId,
+                    surl: result.streamUrl
+                };
+                conversations.push(conv);
 
-        return null;
+                defer.resolve(conv);
+            }).fail(function () {
+                defer.reject();
+            });
+        }
+        else
+            defer.reject();
+
+        return defer.promise();
     }
 
     function Ask(from, message) {
 
-        // get
-
-        var directLine = DirectLine({
-            secret: '8LcS8tQ0UGU.cwA.iUk._NqOkDxxx37e4d13RzIkxiEci-7WBFqk9c_rZSgzxZM'
+        // get conversation
+        getConversationFromName(from).then(function(result){
+            $.ajax({
+                type: 'POST',
+                contentType: "application/json",
+                url: 'https://directline.botframework.com/v3/directline/conversations/' + result.cid + '/activities',
+                headers: { 'Authorization': 'Bearer 8LcS8tQ0UGU.cwA.iUk._NqOkDxxx37e4d13RzIkxiEci-7WBFqk9c_rZSgzxZM' },
+                data: JSON.stringify({
+                    "type": "message",
+                    "from": {
+                        "id": result.name
+                    },
+                    "text": message
+                })
+            }).done(function(result){
+                console.log(result);
+            })
+            .fail(function(err){
+                console.log('error');
+            });
         });
+    }
 
-        directLine.postActivity({
-            from: { id: from},
-            type: 'message',
-            text: message}).sub;
+    function send(from, message)
+    {
+
     }
 
     return {
