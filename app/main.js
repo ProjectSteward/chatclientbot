@@ -25,18 +25,19 @@ $(document).ready(function(){
                     steward.GetConversation(msg.from)
                         .done(function(conversation){
                             var defer = $.Deferred();
-                            conversation.onReply = function(msg) {
-                                connection.Send(msg.from, msg);
-                            };
-                            conversation.Ask(msg.message);
 
                             conversation.Replying(function(reply) {
+                                if (reply.startsWith("Confidence Level"))
+                                    return;
                                 connection.Send(msg.from, reply);
                             });
 
                             conversation.End(function(){
                                 defer.resolve();
                             });
+
+                            conversation.Ask(msg.message);
+
                             return defer.promise();
                         })
                         .fail(function(){
