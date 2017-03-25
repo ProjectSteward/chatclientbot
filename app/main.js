@@ -22,6 +22,8 @@ $(document).ready(function(){
                 onReceivedMessage: function(msg) {
                     log('Steward: I got a message from ' + msg.from + ': ' + msg.message);
 
+                    connection.SendTyping(msg.from);
+
                     steward.GetConversation(msg.from)
                         .done(function(conversation){
                             var defer = $.Deferred();
@@ -29,6 +31,7 @@ $(document).ready(function(){
                             conversation.Replying(function(reply) {
                                 if (reply.startsWith("Confidence Level"))
                                     return;
+
                                 connection.Send(msg.from, reply);
                             });
 

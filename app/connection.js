@@ -90,6 +90,7 @@ function EikonMessengerConnection() {
 
     function Send(to, message) {
         try {
+
             var msg = $msg( {
                 to: to,
                 from: username,
