@@ -4,6 +4,7 @@ function StewardConversation(conv) {
     var conversationId = conv.cid;
     var socketUrl = conv.surl;
 
+    var websocket = null;
     var SOCKET_TIMEOUT = 5*60*1000; // 5 MINS
     var currentTimeoutId = null;
 
