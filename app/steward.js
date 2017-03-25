@@ -5,7 +5,7 @@ function Steward() {
 
     var websocket = null;
     var onReplyCb = null;
-    var conversations = []; // [{name: "adipat.larprattanakul.thomsonreuters.com@reuters.net", cid: 3}]
+    var conversations = []; // [{name: "adipat.larprattanakul.thomsonreuters.com@reuters.net", cid: 3, surl: [websocket]}]
 
     function onReply(f) {
         onReplyCb = f;
@@ -95,12 +95,22 @@ function Steward() {
         });
     }
 
-    function send(from, message)
-    {
+    function GetConversation(username) {
+        var defer = $.Deferred();
 
+        getConversationFromName(username)
+            .done(function(result){
+                defer.resolve(new StewardConversation(result));
+            })
+            .fail(function(){
+                defer.reject('cannot get conversation');
+            });
+
+        return defer.promise();
     }
 
     return {
+        GetConversation: GetConversation,
         Ask: Ask,
         onReply: onReply
     }

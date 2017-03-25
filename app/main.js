@@ -1,16 +1,10 @@
-var connection = new EikonMessengerConnection();
-var steward = new Steward();
-
-function log(msg) {
-    $('#log').append('<div></div>').append(document.createTextNode(msg));
-}
-
 $(document).ready(function(){
-    function onReplyCallback(replyTo, message) {
-        connection.Send(replyTo, message);
-    }
+    var connection = new EikonMessengerConnection();
+    var steward = new Steward();
 
-    steward.onReply(onReplyCallback);
+    function log(msg) {
+        $('#log').append('<div></div>').append(document.createTextNode(msg));
+    }
 
     $('#connect').bind('click', function () {
         var button = $('#connect').get(0);
@@ -27,10 +21,27 @@ $(document).ready(function(){
                 },
                 onReceivedMessage: function(msg) {
                     log('Steward: I got a message from ' + msg.from + ': ' + msg.message);
-                    // connection.Send(msg.from, 'OK, I got your message - "' + msg.message + '"');
-                    // connection.Send(msg.from, '"' + msg.message + '"');
 
-                    steward.Ask(msg.from, msg.message);
+                    steward.GetConversation(msg.from)
+                        .done(function(conversation){
+                            var defer = $.Deferred();
+                            conversation.onReply = function(msg) {
+                                connection.Send(msg.from, msg);
+                            };
+                            conversation.Ask(msg.message);
+
+                            conversation.Replying(function(reply) {
+                                connection.Send(msg.from, reply);
+                            });
+
+                            conversation.End(function(){
+                                defer.resolve();
+                            });
+                            return defer.promise();
+                        })
+                        .fail(function(){
+                            log('ERROR: cannot get conversation')
+                        });
                 },
                 onError: function(err) {
                     log(err);
@@ -46,6 +57,3 @@ $(document).ready(function(){
         }
     });
 });
-
-
-
