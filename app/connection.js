@@ -70,6 +70,11 @@ function EikonMessengerConnection() {
         }
     }
 
+    function removeNotNeededMsg(msg) {
+        var ignoreMsg = '[[:Conversations will be recorded and may be monitored by the participants and their employers, and may be disclosed to governmental or other regulatory bodies in compliance with applicable laws.:]] ';
+        return msg.replace(ignoreMsg, '');
+    }
+
     function onMessage(msg) {
         var to = msg.getAttribute('to');
         var from = msg.getAttribute('from');
@@ -77,9 +82,12 @@ function EikonMessengerConnection() {
         var body = msg.getElementsByTagName('body');
 
         if (type === "chat" && body.length > 0) {
+
+            var reply = removeNotNeededMsg(Strophe.getText(body[0]));
+
             notifyCb(onReceivedMessageCb, {
                 from: from,
-                message: Strophe.getText(body[0])
+                message: reply
             });
         }
 

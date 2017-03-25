@@ -5,10 +5,22 @@ function Steward() {
 
     var conversations = []; // [{name: "adipat.larprattanakul.thomsonreuters.com@reuters.net", cid: 3, surl: [websocket]}]
 
+    function getRealUserName(name) {
+        var n = name.indexOf("@reuters.net/");
+        if (n < 0) {
+            return name;
+        }
+
+        return name.substring(0, n+12);
+    }
+
     function getConversationFromName(name) {
         var defer = $.Deferred();
+
+        var username = getRealUserName(name);
+
         var result = $.grep(conversations, function(e) {
-            return e.Name === name;
+            return e.Name === username;
         });
 
         if (result.length > 0) {
@@ -22,7 +34,7 @@ function Steward() {
                 headers: { 'Authorization': 'Bearer 8LcS8tQ0UGU.cwA.iUk._NqOkDxxx37e4d13RzIkxiEci-7WBFqk9c_rZSgzxZM' }
             }).done(function (result) {
                 var conv = {
-                    name: name,
+                    name: username,
                     cid: result.conversationId,
                     surl: result.streamUrl
                 };
