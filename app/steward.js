@@ -8,11 +8,12 @@ function Steward() {
     function getConversationFromName(name) {
         var defer = $.Deferred();
         var result = $.grep(conversations, function(e) {
-            return e.name === name;
+            return e.Name === name;
         });
 
-        if (result.length > 0)
+        if (result.length > 0) {
             defer.resolve(result[0]);
+        }
         else if (result.length === 0)
         {
             $.ajax({
@@ -25,9 +26,10 @@ function Steward() {
                     cid: result.conversationId,
                     surl: result.streamUrl
                 };
-                conversations.push(conv);
+                var stewardConv = new StewardConversation(conv);
+                conversations.push(stewardConv);
 
-                defer.resolve(conv);
+                defer.resolve(stewardConv);
             }).fail(function () {
                 defer.reject();
             });
@@ -42,8 +44,8 @@ function Steward() {
         var defer = $.Deferred();
 
         getConversationFromName(username)
-            .done(function(result){
-                defer.resolve(new StewardConversation(result));
+            .done(function(conv){
+                defer.resolve(conv);
             })
             .fail(function(){
                 defer.reject('cannot get conversation');
@@ -52,7 +54,19 @@ function Steward() {
         return defer.promise();
     }
 
+    function Disconnect() {
+        if (conversations) {
+            conversations.forEach(function(elem) {
+                elem.Disconnect();
+            });
+
+            conversations.length = 0;
+            conversations = [];
+        }
+    }
+
     return {
-        GetConversation: GetConversation
+        GetConversation: GetConversation,
+        Disconnect: Disconnect
     }
 }

@@ -55,6 +55,7 @@ $(document).ready(function(){
         } else {
             button.value = 'connect';
             connection.Disconnect();
+            steward.Disconnect();
         }
     });
 });
