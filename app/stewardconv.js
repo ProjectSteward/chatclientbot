@@ -13,6 +13,10 @@ function StewardConversation(conv) {
 
     function ConversationFinished() {
         ClearTimeOut();
+
+        websocket.onclose = function () {}; // disable onclose handler first
+        websocket.close();
+
         if (onEndCb)
             onEndCb();
     }
