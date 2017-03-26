@@ -25,11 +25,35 @@ function EikonMessengerConnection() {
         }
     }
 
+    function Reconnect() {
+
+        var olduser = username;
+        var oldpassword = password;
+
+        var attr = {
+            onConnect: onConnectCb,
+            onBeforeDisconnect: onBeforeDisconnectCb,
+            onDisconnected: onDisconnectedCb,
+            onReceivedMessage: onReceivedMessageCb,
+            onSent: onSentCb,
+            onTyping: onTypingCb,
+            onError: onErrorCb,
+            onRawLog: onRawLogCb,
+            keepOnline: keepOnline
+        };
+
+        Disconnect();
+        setTimeout(function() {
+            Connect(olduser, oldpassword, attr);
+        }, 1000 * 10);
+
+    }
+
     function startOnlineTimer() {
         connection.send($pres().tree());
-        setInterval(function() {
-            connection.send($pres().tree());
-        }, 60000);
+        setTimeout(function() {
+            Reconnect();
+        }, 5 * 1000 * 60);
     }
 
     function offlineAfter(mins) {
@@ -71,7 +95,7 @@ function EikonMessengerConnection() {
     }
 
     function removeNotNeededMsg(msg) {
-        var ignoreMsg = '[[:Conversations will be recorded and may be monitored by the participants and their employers, and may be disclosed to governmental or other regulatory bodies in compliance with applicable laws.:]] ';
+        var ignoreMsg = '[[:Conversations will be recorded and may be monitored by the participants and their employers, and may be disclosed to governmental or other regulatory bodies in compliance with applicable laws.:]]';
         return msg.replace(ignoreMsg, '');
     }
 
