@@ -5,7 +5,7 @@ function StewardConversation(conv) {
     var socketUrl = conv.surl;
 
     var websocket = null;
-    var SOCKET_TIMEOUT = 10*60*1000; // 5 MINS
+    var SOCKET_TIMEOUT = 15*60*1000; // 15 MINS
     var currentTimeoutId = null;
 
     var onReplyCb = null;
@@ -25,8 +25,20 @@ function StewardConversation(conv) {
             if (eventObj && eventObj.activities && eventObj.activities.length > 0) {
                 var response = eventObj.activities[0];
                 if (response.from.id === 'StewardTRBot') {
-                    if (onReplyCb) {
-                        onReplyCb(response.text);
+                    var replyText = "";
+                    if (response.text && response.text !== "") {
+                        replyText = response.text;
+                    }
+                    else {
+                        if (response.attachments && response.attachments.length > 0 && response.attachments[0].content) {
+                            replyText = response.attachments[0].content.text;
+                        }
+                    }
+
+                    if (replyText && replyText !== ""){
+                        if (onReplyCb) {
+                            onReplyCb(replyText);
+                        }
                     }
                 }
             }
