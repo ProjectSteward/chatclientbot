@@ -29,8 +29,11 @@ $(document).ready(function(){
                             var defer = $.Deferred();
 
                             conversation.Replying(function(reply) {
-                                if (reply.startsWith("Confidence Level"))
+                                if (reply.startsWith("Confidence Level")) {
+                                    log('Steward: ' + reply);
                                     return;
+                                }
+
 
                                 connection.Send(msg.from, reply);
                             });
